@@ -1,0 +1,82 @@
+/* Reset */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
+
+body {
+  background: linear-gradient(135deg, #0d0d2b, #1a73e8);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.logo-techball {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 20px 0;
+  background: linear-gradient(90deg, #ff6600, #1a73e8, #ff6600);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientMove 5s ease infinite;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.container {
+  background: rgba(0,0,0,0.75);
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+  max-width: 600px;
+  width: 95%;
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 16px;
+  font-size: 2rem;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #ff6600, #1a73e8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Lista de jogadores logados */
+.jogadores-logados {
+  list-style: none;
+  margin: 20px 0;
+  padding: 0;
+}
+
+.jogadores-logados li {
+  background: rgba(255,255,255,0.1);
+  padding: 10px;
+  margin: 6px 0;
+  border-radius: 6px;
+  font-weight: bold;
+  color: #ff6600;
+}
+
+/* Botões */
+button, .btn-voltar {
+  margin-top: 15px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  background: linear-gradient(90deg, #ff6600, #1a73e8);
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  text-decoration: none;
+}
+
+button:hover, .btn-voltar:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}

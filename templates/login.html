@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>TechBall — Login & Cadastro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='ranking.css') }}">
+</head>
+
+<body>
+  <!-- Logo TechBall -->
+  <div class="logo-techball">TECHBALL</div>
+
+  <div class="container">
+    <!-- Mensagens flash -->
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+      {% if mensagens %}
+        {% for categoria, msg in mensagens %}
+          <div class="mensagem {{ categoria }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- Login Duplo -->
+    <section>
+      <h1>Entrar</h1>
+      <p>Digite os nomes dos dois jogadores para iniciar uma nova partida.</p>
+
+      <form method="POST" action="/login">
+        <input type="hidden" name="acao" value="login_duplo">
+        <input id="jogador1" name="jogador1" type="text" placeholder="Jogador 1" required>
+        <input id="jogador2" name="jogador2" type="text" placeholder="Jogador 2" required>
+        <button type="submit">🚀 Iniciar Partida</button>
+      </form>
+    </section>
+
+    <hr>
+
+    <!-- Cadastro -->
+    <section>
+      <h2>Não tem cadastro? Crie agora</h2>
+      <form method="POST" action="/login">
+        <input type="hidden" name="acao" value="cadastrar">
+        <input id="cad-nome" name="nome" type="text" placeholder="Nome do Jogador" required>
+        <button type="submit">Cadastrar</button>
+      </form>
+      <small>Dica: o nome é único e será usado para login.</small>
+    </section>
+
+    <hr>
+
+    <!-- Links -->
+    <section class="ranking-login">
+      <a href="{{ url_for('ranking') }}" target="_blank" class="btn-ranking">🏆 Ver Ranking</a>
+      <a href="{{ url_for('partida_publica') }}" target="_blank" class="btn-placar">📺 Ver Placar</a>
+    </section>
+  </div>
+</body>
+</html>

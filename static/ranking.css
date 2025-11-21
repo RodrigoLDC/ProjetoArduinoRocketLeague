@@ -1,0 +1,146 @@
+/* Botão Ranking na página de login */
+.btn-ranking {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 14px 26px;
+  background: linear-gradient(90deg, #ff9800, #ff5722);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.btn-ranking:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+  background: linear-gradient(90deg, #ff5722, #ff9800);
+}
+
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ========================= */
+/* 🔹 Estilo Ranking TECHBALL com Logo */
+/* ========================= */
+
+body {
+  background: linear-gradient(135deg, #0d0d2b, #1a73e8);
+  color: #fff;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.container {
+  background: rgba(0,0,0,0.7);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 25px rgba(26, 115, 232, 0.8);
+  width: 90%;
+  max-width: 1000px;
+  text-align: center;
+}
+
+/* Logo TECHBALL animada */
+.logo-techball {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #ff6600, #1a73e8, #ff6600);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientMove 5s ease infinite;
+  letter-spacing: 2px;
+  text-shadow: 0 0 15px rgba(255,102,0,0.8), 0 0 20px rgba(26,115,232,0.8);
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Subtítulo Ranking */
+h1 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  background: linear-gradient(90deg, #ff6600, #1a73e8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* Estilo da Tabela */
+.tabela-ranking {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 1rem;
+}
+
+.tabela-ranking thead {
+  background: linear-gradient(90deg, #1a73e8, #ff6600);
+}
+
+.tabela-ranking th, 
+.tabela-ranking td {
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,0.2);
+  text-align: center;
+}
+
+.tabela-ranking tbody tr:nth-child(even) {
+  background: rgba(255,255,255,0.05);
+}
+
+.tabela-ranking tbody tr:hover {
+  background: rgba(255,255,255,0.15);
+  transform: scale(1.01);
+  transition: 0.2s;
+}
+
+/* Destaque para o top 3 */
+.tabela-ranking tbody tr:nth-child(1) td {
+  background: rgba(255, 165, 0, 0.3);
+  font-weight: bold;
+}
+
+.tabela-ranking tbody tr:nth-child(2) td {
+  background: rgba(192, 192, 192, 0.3);
+  font-weight: bold;
+}
+
+.tabela-ranking tbody tr:nth-child(3) td {
+  background: rgba(205, 127, 50, 0.3);
+  font-weight: bold;
+}
+
+/* Botão voltar */
+.btn-voltar {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  background: linear-gradient(90deg, #1a73e8, #ff6600);
+  color: #fff;
+  transition: 0.3s;
+}
+
+.btn-voltar:hover {
+  opacity: 0.8;
+}

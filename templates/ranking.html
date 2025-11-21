@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Ranking Geral</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='ranking.css') }}">
+  <style>
+    /* 💫 Efeito suave ao atualizar tabela */
+    tbody {
+      transition: opacity 0.3s ease;
+    }
+    .atualizando {
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo-techball">TECHBALL</div>
+    <h1>🏆 Ranking Geral</h1>
+
+    <table class="tabela-ranking" id="tabela-ranking">
+      <thead>
+        <tr>
+          <th>Posição</th>
+          <th>Jogador</th>
+          <th>Pontos</th>
+          <th>Vitórias</th>
+          <th>Empates</th>
+          <th>Derrotas</th>
+          <th>Gols Marcados</th>
+          <th>Gols Sofridos</th>
+          <th>Saldo de Gols</th>
+        </tr>
+      </thead>
+      <tbody id="ranking-body">
+        {% for row in ranking %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ row.nome }}</td>
+          <td>{{ row.pontos }}</td>
+          <td>{{ row.vitorias }}</td>
+          <td>{{ row.empates }}</td>
+          <td>{{ row.derrotas }}</td>
+          <td>{{ row.gols_marcados }}</td>
+          <td>{{ row.gols_sofridos }}</td>
+          <td>{{ row.saldo_gols }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Botão de voltar -->
+    <a href="{{ url_for('login') }}" class="btn-voltar">⬅️ Voltar</a>
+  </div>
+
+  <!-- =============================== -->
+  <!-- 🔹 Script de atualização automática -->
+  <!-- =============================== -->
+  <script>
+    async function atualizarRanking() {
+      const tbody = document.getElementById('ranking-body');
+      tbody.classList.add('atualizando');
+
+      try {
+        const resposta = await fetch('/api/ranking_json'); // endpoint Flask que envia ranking em JSON
+        if (!resposta.ok) throw new Error("Falha ao buscar ranking");
+
+        const ranking = await resposta.json();
+
+        // Limpa tabela e insere novas linhas
+        tbody.innerHTML = "";
+        ranking.forEach((row, i) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${i + 1}</td>
+            <td>${row.nome}</td>
+            <td>${row.pontos}</td>
+            <td>${row.vitorias}</td>
+            <td>${row.empates}</td>
+            <td>${row.derrotas}</td>
+            <td>${row.gols_marcados}</td>
+            <td>${row.gols_sofridos}</td>
+            <td>${row.saldo_gols}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+      } catch (err) {
+        console.error("Erro ao atualizar ranking:", err);
+      } finally {
+        tbody.classList.remove('atualizando');
+      }
+    }
+
+    
+    setInterval(() => {
+      location.reload();
+    }, 2000); // 2000 ms = 2 segundos
+</script>
+
+  </script>
+</body>
+</html>

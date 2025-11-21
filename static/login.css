@@ -1,0 +1,137 @@
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #0d0d2b, #1a73e8);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Logo TechBall */
+.logo-techball {
+  font-size: 3rem;
+  font-weight: bold;
+  margin: 20px 0;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #ff6600, #1a73e8, #ff6600);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientMove 5s ease infinite;
+  letter-spacing: 3px;
+  text-shadow: 0 0 15px rgba(255,102,0,0.8), 0 0 20px rgba(26,115,232,0.8);
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Caixa de login */
+.container {
+  background: rgba(0,0,0,0.75);
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+  max-width: 450px;
+  width: 95%;
+  text-align: center;
+}
+
+h1, h2 {
+  margin-bottom: 12px;
+  background: linear-gradient(90deg, #ff6600, #1a73e8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+p, small {
+  color: #ddd;
+}
+
+/* Inputs e botões */
+input[type="text"],
+button,
+.btn-ranking,
+.btn-placar {
+  width: 100%;
+  display: block;
+  padding: 14px;
+  margin: 10px 0;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Inputs */
+input[type="text"] {
+  border: none;
+  outline: none;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+
+input:focus {
+  border: 1px solid #1a73e8;
+}
+
+/* Botões */
+button, .btn-ranking {
+  background: linear-gradient(90deg, #ff6600, #1a73e8);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  text-decoration: none;
+}
+
+button:hover, .btn-ranking:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+/* Novo botão: Ver Placar */
+.btn-placar {
+  background: linear-gradient(90deg, #1a73e8, #00ffcc);
+  color: #fff;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.btn-placar:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+  box-shadow: 0 0 12px rgba(0,255,200,0.6);
+}
+
+/* Mensagens */
+.mensagem {
+  margin: 12px 0;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.mensagem.sucesso { background: #d4edda; color: #155724; }
+.mensagem.erro { background: #f8d7da; color: #721c24; }
+
+/* Linha divisória */
+hr {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.2);
+  margin: 24px 0;
+}

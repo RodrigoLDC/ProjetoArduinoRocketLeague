@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>TECHBALL — Partida</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='partida.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='ranking.css') }}">
+  <style>
+    .gol-atualizado {
+      animation: piscarGol 0.8s ease;
+    }
+    @keyframes piscarGol {
+      0% { color: #fff; transform: scale(1); }
+      50% { color: #00ff88; transform: scale(1.3); }
+      100% { color: #fff; transform: scale(1); }
+    }
+    .botoes button:disabled {
+      background: rgba(255, 255, 255, 0.1);
+      color: #777;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="logo-techball">TECHBALL</div>
+
+  <div class="container">
+    <div id="timer">05:00</div>
+
+    <div id="placar">
+      <div class="time">
+        <h2 id="jogador1">{{ jogadores[0].nome }}</h2>
+        <span id="gols1">0</span>
+      </div>
+      <div class="time">
+        <h2 id="jogador2">{{ jogadores[1].nome }}</h2>
+        <span id="gols2">0</span>
+      </div>
+    </div>
+
+    <div class="botoes">
+      <button id="btnGol1" onclick="gol('{{ jogadores[0].id_jogador }}',1)">+ Gol {{ jogadores[0].nome }}</button>
+      <button id="btnGol2" onclick="gol('{{ jogadores[1].id_jogador }}',2)">+ Gol {{ jogadores[1].nome }}</button>
+    </div>
+
+    <div class="botoes">
+      <button id="btnPausar" onclick="pausarPartida()">⏸️ Pausar</button>
+      <button id="btnEncerrar" onclick="encerrarPartida()">⏹️ Encerrar</button>
+    </div>
+  </div>
+
+  <script>
+    // ==========================
+    // VARIÁVEIS PRINCIPAIS
+    // ==========================
+    let idPartida = parseInt("{{ id_partida }}") || 0;
+    let partidaAtiva = "{{ 'true' if partida_ativa else 'false' }}";
+    const timerEl = document.getElementById("timer");
+    let tempo = 5 * 60;
+    let pausado = !partidaAtiva;
+    let golsAtuais = [0, 0];
+    let intervaloTimer = null;
+
+    function renderTimer() {
+      const min = String(Math.floor(tempo / 60)).padStart(2, "0");
+      const seg = String(tempo % 60).padStart(2, "0");
+      timerEl.textContent = `${min}:${seg}`;
+    }
+
+    function toggleBotoes(ativo) {
+      document.querySelectorAll(".botoes button").forEach(b => b.disabled = !ativo);
+    }
+
+    toggleBotoes(partidaAtiva);
+    renderTimer();
+
+    // ==========================
+    // FUNÇÕES DE CONTROLE
+    // ==========================
+    async function gol(idJogador, jogadorNum) {
+      if (!partidaAtiva) return;
+      await fetch(`/registrar_gol/${idJogador}/${idPartida}`, { method: "POST" });
+      atualizarPlacar();
+    }
+
+    function pausarPartida() {
+      pausado = !pausado;
+      alert(pausado ? "⏸️ Partida pausada" : "▶️ Retomada");
+    }
+
+    async function encerrarPartida() {
+      if (!idPartida || idPartida === 0) return;
+
+      try {
+        await fetch(`/encerrar_partida/${idPartida}`, { method: "POST" });
+      } catch (err) {
+        console.error("Erro ao encerrar partida:", err);
+      }
+
+      // 🔄 Reseta o placar localmente sem sair da página
+      resetarPlacarVisual();
+    }
+
+    // ==========================
+    // RESETA PLACAR VISUAL
+    // ==========================
+    function resetarPlacarVisual() {
+      idPartida = 0;
+      partidaAtiva = false;
+      pausado = true;
+      tempo = 5 * 60;
+      golsAtuais = [0, 0];
+
+      document.getElementById("jogador1").textContent = "null";
+      document.getElementById("jogador2").textContent = "null";
+      document.getElementById("gols1").textContent = "0";
+      document.getElementById("gols2").textContent = "0";
+
+      toggleBotoes(false);
+      renderTimer();
+    }
+
+    // ==========================
+    // PLACAR AO VIVO
+    // ==========================
+    async function atualizarPlacar() {
+      try {
+        if (!idPartida || idPartida === 0) return;
+        const resp = await fetch(`/api/status_partida/${idPartida}`, { cache: "no-store" });
+        const dados = await resp.json();
+        if (!Array.isArray(dados)) return;
+
+        dados.forEach((item, i) => {
+          const golsSpan = document.getElementById(`gols${i + 1}`);
+          const nomeH2 = document.getElementById(`jogador${i + 1}`);
+          if (nomeH2 && item.nome) nomeH2.textContent = item.nome;
+
+          if (parseInt(item.gols) !== golsAtuais[i]) {
+            golsSpan.textContent = item.gols;
+            golsSpan.classList.add("gol-atualizado");
+            setTimeout(() => golsSpan.classList.remove("gol-atualizado"), 800);
+            golsAtuais[i] = parseInt(item.gols);
+          }
+        });
+      } catch (err) {
+        console.error("Erro ao atualizar placar:", err);
+      }
+    }
+
+    // ==========================
+    // VERIFICA SE SURGIU UMA PARTIDA NOVA
+    // ==========================
+    async function verificarPartidaAtiva() {
+      try {
+        const resp = await fetch("/api/partida_ativa", { cache: "no-store" });
+        const data = await resp.json();
+
+        // se ainda não há partida ativa, nada muda
+        if (!data.ativa) return;
+
+        // se detectou partida nova
+        if (idPartida === 0 && data.ativa) {
+          idPartida = data.id_partida;
+          partidaAtiva = true;
+          pausado = false;
+
+          const j1 = data.jogadores[0] || { nome: "null" };
+          const j2 = data.jogadores[1] || { nome: "null" };
+
+          document.getElementById("jogador1").textContent = j1.nome;
+          document.getElementById("jogador2").textContent = j2.nome;
+          document.getElementById("btnGol1").textContent = "+ Gol " + j1.nome;
+          document.getElementById("btnGol2").textContent = "+ Gol " + j2.nome;
+
+          toggleBotoes(true);
+          tempo = 5 * 60;
+          renderTimer();
+          iniciarTimer();
+          atualizarPlacar();
+        }
+      } catch (e) {
+        console.error("Erro ao verificar partida ativa:", e);
+      }
+    }
+
+    // ==========================
+    // TIMER DINÂMICO
+    // ==========================
+    function iniciarTimer() {
+      if (intervaloTimer) clearInterval(intervaloTimer);
+      intervaloTimer = setInterval(() => {
+        if (partidaAtiva && !pausado) {
+          if (tempo > 0) {
+            tempo--;
+            renderTimer();
+          } else {
+            // ⏱️ Quando tempo zerar → encerra e reseta visualmente
+            encerrarPartida();
+          }
+        }
+      }, 1000);
+    }
+
+    // ==========================
+    // INTERVALOS DE ATUALIZAÇÃO
+    // ==========================
+    setInterval(verificarPartidaAtiva, 2000);
+    setInterval(atualizarPlacar, 1000);
+  </script>
+</body>
+</html>

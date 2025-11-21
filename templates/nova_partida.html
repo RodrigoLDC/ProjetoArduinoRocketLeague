@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>TECHBALL — Nova Partida</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='nova_partida.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='ranking.css') }}">
+</head>
+<body>
+  <!-- 🔹 Logo TECHBALL -->
+  <div class="logo-techball">TECHBALL</div>
+
+  <div class="container">
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+      {% if mensagens %}
+        {% for categoria, msg in mensagens %}
+          <div class="mensagem {{ categoria }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <h1>Pronto para a Partida!</h1>
+    <p>Jogadores logados:</p>
+
+    <ul class="jogadores-logados">
+      {% for jogador in jogadores %}
+        <li>{{ jogador['nome'] }}</li>
+      {% endfor %}
+    </ul>
+
+    {% if jogadores|length == 2 %}
+      <form method="POST" action="{{ url_for('iniciar_partida') }}">
+        <button type="submit">🚀 Iniciar Partida</button>
+      </form>
+    {% else %}
+      <p style="color:red; font-weight:bold;">⚠️ Aguarde até que 2 jogadores estejam logados.</p>
+    {% endif %}
+
+    <a href="{{ url_for('logout') }}" class="btn-voltar">🔙 Sair</a>
+  </div>
+
+  <!-- 🔹 Script revisado -->
+  <script>
+    const logoutUrl = "{{ url_for('logout') }}";
+
+    function doLogout() {
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(logoutUrl);
+      } else {
+        fetch(logoutUrl, { method: "POST", keepalive: true });
+      }
+    }
+
+    // Detecta reload e marca no sessionStorage
+    const navEntries = performance.getEntriesByType("navigation");
+    if (navEntries.length > 0 && navEntries[0].type === "reload") {
+      sessionStorage.setItem("isReloading", "1");
+    } else {
+      sessionStorage.removeItem("isReloading");
+    }
+
+    // Marca navegação interna (links internos ou submit do form)
+    function markInternalNav() {
+      sessionStorage.setItem("internalNav", "1");
+    }
+
+    // Clique em links
+    document.addEventListener("click", function (e) {
+      const elem = e.target.closest("a");
+      if (!elem || !elem.href) return;
+
+      if (elem.hostname === location.hostname) {
+        // Link interno
+        markInternalNav();
+      } else {
+        // Link externo → desloga
+        doLogout();
+      }
+    });
+
+    // Submit do formulário "Iniciar Partida"
+    const partidaForm = document.querySelector('form[action="{{ url_for("iniciar_partida") }}"]');
+    if (partidaForm) {
+      partidaForm.addEventListener("submit", markInternalNav);
+    }
+
+    // Logout só se NÃO for refresh e NÃO for navegação interna
+    window.addEventListener("pagehide", function () {
+      if (!sessionStorage.getItem("isReloading") && !sessionStorage.getItem("internalNav")) {
+        doLogout();
+      }
+    });
+
+    // Limpa as flags quando a página volta
+    window.addEventListener("pageshow", function () {
+      sessionStorage.removeItem("isReloading");
+      sessionStorage.removeItem("internalNav");
+    });
+  </script>
+</body>
+</html>
